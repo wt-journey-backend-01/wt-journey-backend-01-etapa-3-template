@@ -96,6 +96,22 @@ module.exports = {
         directory: './db/seeds',
       },
   },
+  ci: {
+    client: 'pg',
+    connection: {
+      host: 'postgres', 
+      port: 5432,
+      user: process.env.POSTGRES_USER,
+      password: process.env.POSTGRES_PASSWORD,
+      database: process.env.POSTGRES_DB,
+    },
+    migrations: {
+      directory: './db/migrations',
+    },
+    seeds: {
+      directory: './db/seeds',
+    },
+  }
 
 };
 
@@ -108,13 +124,18 @@ Dentro da pasta `db/`, você deve criar os seguinte arquivo:
 Arquivo responsável por criar e exportar a instância do Knex:
 
 ```js
-const config = require("../knexfile")
-const knex = require("knex")
+const knexConfig = require('../knexfile');
+const knex = require('knex'); 
 
-const db = knex(config.development)
+const nodeEnv = process.env.NODE_ENV || 'development';
+const config = knexConfig[nodeEnv]; 
 
-module.exports = db
+const db = knex(config);
+
+module.exports = db;
 ```
+
+Crie a variável de ambiente ```NODE_ENV``` no arquivo ```.env``` para definir qual ambiente será usado. No caso, em desenvolvimento, o valor atribuído a ela deverá ser ```development```.
 
 ---
 
